@@ -1,0 +1,118 @@
+{
+  "subset": "FD001",
+  "best_model": "XGBoost",
+  "feature_cols": [
+    "op_setting_1",
+    "op_setting_2",
+    "op_setting_3",
+    "sensor_2",
+    "sensor_3",
+    "sensor_4",
+    "sensor_7",
+    "sensor_8",
+    "sensor_9",
+    "sensor_11",
+    "sensor_12",
+    "sensor_13",
+    "sensor_14",
+    "sensor_15",
+    "sensor_17",
+    "sensor_20",
+    "sensor_21",
+    "op_setting_1_rollmean5",
+    "op_setting_2_rollmean5",
+    "op_setting_3_rollmean5",
+    "sensor_2_rollmean5",
+    "sensor_3_rollmean5",
+    "sensor_4_rollmean5",
+    "sensor_7_rollmean5",
+    "sensor_8_rollmean5",
+    "sensor_9_rollmean5",
+    "sensor_11_rollmean5",
+    "sensor_12_rollmean5",
+    "sensor_13_rollmean5",
+    "sensor_14_rollmean5",
+    "sensor_15_rollmean5",
+    "sensor_17_rollmean5",
+    "sensor_20_rollmean5",
+    "sensor_21_rollmean5",
+    "op_setting_1_rollstd5",
+    "op_setting_2_rollstd5",
+    "op_setting_3_rollstd5",
+    "sensor_2_rollstd5",
+    "sensor_3_rollstd5",
+    "sensor_4_rollstd5",
+    "sensor_7_rollstd5",
+    "sensor_8_rollstd5",
+    "sensor_9_rollstd5",
+    "sensor_11_rollstd5",
+    "sensor_12_rollstd5",
+    "sensor_13_rollstd5",
+    "sensor_14_rollstd5",
+    "sensor_15_rollstd5",
+    "sensor_17_rollstd5",
+    "sensor_20_rollstd5",
+    "sensor_21_rollstd5"
+  ],
+  "base_feature_cols": [
+    "op_setting_1",
+    "op_setting_2",
+    "op_setting_3",
+    "sensor_2",
+    "sensor_3",
+    "sensor_4",
+    "sensor_7",
+    "sensor_8",
+    "sensor_9",
+    "sensor_11",
+    "sensor_12",
+    "sensor_13",
+    "sensor_14",
+    "sensor_15",
+    "sensor_17",
+    "sensor_20",
+    "sensor_21"
+  ],
+  "rul_clip": 125,
+  "rolling_window": 5,
+  "results": {
+    "LinearRegression": {
+      "cv": {
+        "MAE": 17.382,
+        "RMSE": 21.235,
+        "R2": 0.74
+      },
+      "test": {
+        "MAE": 16.75,
+        "RMSE": 21.107,
+        "R2": 0.7226
+      }
+    },
+    "RandomForest": {
+      "cv": {
+        "MAE": 13.0,
+        "RMSE": 18.057,
+        "R2": 0.811
+      },
+      "test": {
+        "MAE": 12.787,
+        "RMSE": 18.043,
+        "R2": 0.7973
+      }
+    },
+    "XGBoost": {
+      "cv": {
+        "MAE": 13.113,
+        "RMSE": 18.128,
+        "R2": 0.809
+      },
+      "test": {
+        "MAE": 12.529,
+        "RMSE": 17.712,
+        "R2": 0.8046
+      }
+    }
+  },
+  "n_train_rows": 20631,
+  "n_test_units": 100
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "label": "Critical (near failure)",
+    "unit_number": 34,
+    "actual_rul": 7.0,
+    "readings": {
+      "op_setting_1": -0.0011,
+      "op_setting_2": -0.0001,
+      "op_setting_3": 100.0,
+      "sensor_2": 643.74,
+      "sensor_3": 1600.38,
+      "sensor_4": 1427.49,
+      "sensor_7": 551.77,
+      "sensor_8": 2388.29,
+      "sensor_9": 9036.27,
+      "sensor_11": 48.13,
+      "sensor_12": 519.44,
+      "sensor_13": 2388.25,
+      "sensor_14": 8122.11,
+      "sensor_15": 8.5158,
+      "sensor_17": 397.0,
+      "sensor_20": 38.62,
+      "sensor_21": 23.0641
+    }
+  },
+  {
+    "label": "Warning",
+    "unit_number": 77,
+    "actual_rul": 34.0,
+    "readings": {
+      "op_setting_1": -0.0027,
+      "op_setting_2": 0.0003,
+      "op_setting_3": 100.0,
+      "sensor_2": 642.79,
+      "sensor_3": 1593.81,
+      "sensor_4": 1418.62,
+      "sensor_7": 552.24,
+      "sensor_8": 2388.25,
+      "sensor_9": 9045.43,
+      "sensor_11": 47.81,
+      "sensor_12": 520.16,
+      "sensor_13": 2388.21,
+      "sensor_14": 8128.16,
+      "sensor_15": 8.4543,
+      "sensor_17": 396.0,
+      "sensor_20": 38.75,
+      "sensor_21": 23.1712
+    }
+  },
+  {
+    "label": "Moderate wear",
+    "unit_number": 19,
+    "actual_rul": 87.0,
+    "readings": {
+      "op_setting_1": 0.0004,
+      "op_setting_2": 0.0003,
+      "op_setting_3": 100.0,
+      "sensor_2": 642.79,
+      "sensor_3": 1588.88,
+      "sensor_4": 1406.32,
+      "sensor_7": 553.87,
+      "sensor_8": 2388.1,
+      "sensor_9": 9055.54,
+      "sensor_11": 47.35,
+      "sensor_12": 521.48,
+      "sensor_13": 2388.06,
+      "sensor_14": 8140.2,
+      "sensor_15": 8.4768,
+      "sensor_17": 393.0,
+      "sensor_20": 38.83,
+      "sensor_21": 23.3297
+    }
+  },
+  {
+    "label": "Good condition",
+    "unit_number": 23,
+    "actual_rul": 113.0,
+    "readings": {
+      "op_setting_1": -0.0006,
+      "op_setting_2": 0.0003,
+      "op_setting_3": 100.0,
+      "sensor_2": 642.03,
+      "sensor_3": 1588.77,
+      "sensor_4": 1403.06,
+      "sensor_7": 554.15,
+      "sensor_8": 2388.05,
+      "sensor_9": 9051.1,
+      "sensor_11": 47.22,
+      "sensor_12": 521.83,
+      "sensor_13": 2388.08,
+      "sensor_14": 8133.6,
+      "sensor_15": 8.4249,
+      "sensor_17": 392.0,
+      "sensor_20": 38.97,
+      "sensor_21": 23.2815
+    }
+  },
+  {
+    "label": "Healthy (like new)",
+    "unit_number": 83,
+    "actual_rul": 125.0,
+    "readings": {
+      "op_setting_1": -0.0024,
+      "op_setting_2": 0.0002,
+      "op_setting_3": 100.0,
+      "sensor_2": 642.81,
+      "sensor_3": 1594.68,
+      "sensor_4": 1406.9,
+      "sensor_7": 553.87,
+      "sensor_8": 2388.06,
+      "sensor_9": 9058.7,
+      "sensor_11": 47.2,
+      "sensor_12": 521.67,
+      "sensor_13": 2388.09,
+      "sensor_14": 8141.38,
+      "sensor_15": 8.4309,
+      "sensor_17": 392.0,
+      "sensor_20": 38.74,
+      "sensor_21": 23.3021
+    }
+  }
+]

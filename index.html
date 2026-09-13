@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Turbofan RUL Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0f14;
+    --panel: #121a22;
+    --panel-2: #17212b;
+    --line: #24323e;
+    --text: #e7edf2;
+    --text-dim: #8fa3b0;
+    --teal: #2dd4bf;
+    --amber: #f2a93b;
+    --red: #ef5b5b;
+    --blue: #4f9fe8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(1200px 800px at 15% -10%, #101a24 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px 60px;
+  }
+  .wrap{ max-width: 1180px; margin: 0 auto; }
+  header{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px; margin-bottom: 28px;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand-mark{
+    width:40px; height:40px; border-radius: 8px;
+    background: conic-gradient(from 220deg, var(--teal), var(--blue) 40%, var(--amber) 75%, var(--teal));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:15px; color:#0a0f14;
+  }
+  h1{ font-size: 22px; margin: 0; font-weight: 800; letter-spacing: -0.01em; }
+  .sub{ color: var(--text-dim); font-size: 13.5px; margin-top: 2px; }
+  .badge{
+    font-family:'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim);
+    border: 1px solid var(--line); padding: 6px 12px; border-radius: 6px;
+    background: var(--panel);
+  }
+  .badge b{ color: var(--teal); font-weight: 600; }
+
+  .grid{ display:grid; grid-template-columns: 380px 1fr; gap: 24px; }
+  @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+  .panel{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .panel h2{ font-size: 14px; margin: 0 0 4px; letter-spacing: 0.01em; }
+  .panel .hint{ color: var(--text-dim); font-size: 12.5px; margin: 0 0 16px; line-height:1.5; }
+
+  .samples{ display:flex; flex-wrap:wrap; gap: 8px; margin-bottom: 18px; }
+  .sample-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; padding: 7px 10px; border-radius: 6px;
+    border: 1px solid var(--line); background: var(--panel-2); color: var(--text-dim);
+    cursor: pointer; transition: border-color .15s, color .15s;
+  }
+  .sample-btn:hover{ border-color: var(--teal); color: var(--teal); }
+
+  .field-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+  .field label{
+    display:block; font-size: 11px; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;
+  }
+  .field input{
+    width: 100%; background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    padding: 8px 9px; border-radius: 6px; outline: none;
+  }
+  .field input:focus{ border-color: var(--blue); }
+
+  .actions{ display:flex; gap:10px; margin-top: 18px; }
+  button.primary{
+    flex:1; background: var(--teal); color:#06201c; border:none; font-weight:700;
+    padding: 12px; border-radius: 7px; cursor:pointer; font-size: 14px;
+    transition: filter .15s;
+  }
+  button.primary:hover{ filter: brightness(1.08); }
+  button.ghost{
+    background: transparent; color: var(--text-dim); border: 1px solid var(--line);
+    padding: 12px 16px; border-radius: 7px; cursor:pointer; font-size: 13px;
+  }
+  button.ghost:hover{ color: var(--text); border-color: var(--text-dim); }
+
+  .result-row{ display:grid; grid-template-columns: 260px 1fr; gap: 24px; }
+  @media (max-width: 1080px){ .result-row{ grid-template-columns: 1fr; } }
+
+  .gauge-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .gauge-num{ font-family:'JetBrains Mono', monospace; font-size: 42px; font-weight:700; margin-top: -66px; }
+  .gauge-unit{ color: var(--text-dim); font-size: 12px; font-family:'JetBrains Mono', monospace; margin-top: 2px;}
+  .status-pill{
+    margin-top: 14px; padding: 6px 14px; border-radius: 100px; font-size: 12.5px;
+    font-weight: 700; letter-spacing: 0.02em; font-family:'JetBrains Mono', monospace;
+  }
+  .status-healthy{ background: rgba(45,212,191,.14); color: var(--teal); }
+  .status-warning{ background: rgba(242,169,59,.14); color: var(--amber); }
+  .status-critical{ background: rgba(239,91,91,.14); color: var(--red); }
+
+  .empty-state{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height: 100%; color: var(--text-dim); text-align:center; padding: 40px 20px;
+    font-size: 13.5px; line-height: 1.6;
+  }
+
+  .shap-list{ margin-top: 6px; }
+  .shap-row{ display:grid; grid-template-columns: 190px 1fr 60px; align-items:center; gap: 10px; margin-bottom: 9px; }
+  .shap-name{ font-family:'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .shap-bar-track{ height: 8px; background: var(--panel-2); border-radius: 4px; overflow:hidden; position:relative; }
+  .shap-bar-fill{ height: 100%; border-radius: 4px; }
+  .shap-val{ font-family:'JetBrains Mono', monospace; font-size: 11.5px; text-align:right; }
+
+  .section-title{ font-size: 14px; font-weight: 700; margin: 34px 0 14px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .metrics-table{ width:100%; border-collapse: collapse; font-size: 13px; }
+  .metrics-table th, .metrics-table td{ text-align:left; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  .metrics-table th{ color: var(--text-dim); font-weight: 600; font-size: 11.5px; font-family:'JetBrains Mono', monospace; }
+  .metrics-table td{ font-family:'JetBrains Mono', monospace; }
+  .best-row{ color: var(--teal); }
+
+  .figures{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px;}
+  @media (max-width: 780px){ .figures{ grid-template-columns: 1fr; } }
+  .figures img{ width:100%; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+  .figures figcaption{ color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+  figure{ margin: 0; }
+
+  footer{ margin-top: 46px; color: var(--text-dim); font-size: 12px; text-align:center; }
+  footer a{ color: var(--blue); text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-mark">RUL</div>
+      <div>
+        <h1>Turbofan Engine RUL Monitor</h1>
+        <div class="sub">Remaining Useful Life prediction from live sensor telemetry &middot; NASA C-MAPSS FD001</div>
+      </div>
+    </div>
+    <div class="badge">model: <b id="model-badge">loading…</b></div>
+  </header>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Sensor snapshot</h2>
+      <p class="hint">Load a sample engine reading or enter values from your own telemetry feed, then run the model.</p>
+      <div class="samples" id="samples"></div>
+      <div class="field-grid" id="field-grid"></div>
+      <div class="actions">
+        <button class="primary" id="run-btn">Predict RUL</button>
+        <button class="ghost" id="reset-btn">Reset</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Prediction</h2>
+      <p class="hint">Estimated cycles remaining before recommended maintenance, with the sensor signals driving that estimate.</p>
+      <div id="result-area">
+        <div class="empty-state">Load a sample or enter sensor values, then click <strong>Predict RUL</strong> to see the estimated remaining useful life and its explanation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Model evaluation</div>
+  <div class="panel">
+    <p class="hint" style="margin-bottom:16px;">Three regression models were trained with 5-fold group cross-validation (grouped by engine unit) and evaluated on the held-out FD001 test set (last recorded cycle of each of 100 engines, ground-truth RUL from NASA).</p>
+    <table class="metrics-table" id="metrics-table"></table>
+    <div class="figures">
+      <figure><img src="/static/assets/model_comparison.png" alt="Model comparison chart"><figcaption>Test-set MAE / RMSE by model</figcaption></figure>
+      <figure><img src="/static/assets/rul_prediction_scatter.png" alt="Predicted vs actual RUL scatter"><figcaption>Best model: predicted vs. actual RUL</figcaption></figure>
+      <figure><img src="/static/assets/shap_summary.png" alt="SHAP summary plot"><figcaption>Global feature importance (SHAP)</figcaption></figure>
+    </div>
+  </div>
+
+  <footer>
+    Data: NASA Prognostics Center of Excellence &mdash; C-MAPSS Turbofan Engine Degradation Simulation (FD001 subset). API docs at <a href="/docs">/docs</a>.
+  </footer>
+</div>
+
+<script>
+const API = "";
+let FIELDS = [];
+let currentSample = null;
+
+async function jget(path){ const r = await fetch(API+path); if(!r.ok) throw new Error(await r.text()); return r.json(); }
+async function jpost(path, body){
+  const r = await fetch(API+path, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function niceFieldName(f){
+  return f.replace("op_setting_", "Setting ").replace("sensor_", "Sensor ");
+}
+
+function renderFields(values){
+  const grid = document.getElementById("field-grid");
+  grid.innerHTML = "";
+  FIELDS.forEach(f => {
+    const div = document.createElement("div");
+    div.className = "field";
+    const v = values && values[f] !== undefined ? values[f] : "";
+    div.innerHTML = `<label for="f-${f}">${niceFieldName(f)}</label><input id="f-${f}" data-field="${f}" type="number" step="any" value="${v}">`;
+    grid.appendChild(div);
+  });
+}
+
+function collectValues(){
+  const out = {};
+  FIELDS.forEach(f => {
+    const el = document.getElementById(`f-${f}`);
+    out[f] = parseFloat(el.value);
+  });
+  return out;
+}
+
+function statusClass(status){
+  return status === "healthy" ? "status-healthy" : status === "warning" ? "status-warning" : "status-critical";
+}
+function statusColor(status){
+  return status === "healthy" ? "#2dd4bf" : status === "warning" ? "#f2a93b" : "#ef5b5b";
+}
+
+function gaugeSVG(pct, color){
+  // semi-circular gauge, pct in [0,1]
+  const r = 84, cx = 100, cy = 100;
+  const startAngle = Math.PI, endAngle = Math.PI - Math.PI * pct;
+  const x1 = cx + r*Math.cos(startAngle), y1 = cy + r*Math.sin(startAngle);
+  const x2 = cx + r*Math.cos(endAngle), y2 = cy + r*Math.sin(endAngle);
+  const largeArc = pct > 0.5 ? 1 : 0;
+  return `
+  <svg width="200" height="120" viewBox="0 0 200 120">
+    <path d="M 16 100 A 84 84 0 0 1 184 100" fill="none" stroke="#1c2934" stroke-width="14" stroke-linecap="round"/>
+    <path d="M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round"/>
+  </svg>`;
+}
+
+async function loadSamples(){
+  const samples = await jget("/api/samples");
+  const wrap = document.getElementById("samples");
+  wrap.innerHTML = "";
+  samples.forEach(s => {
+    const btn = document.createElement("button");
+    btn.className = "sample-btn";
+    btn.textContent = s.label;
+    btn.onclick = () => { currentSample = s; renderFields(s.readings); };
+    wrap.appendChild(btn);
+  });
+  // default-load first sample
+  if(samples.length){ currentSample = samples[0]; renderFields(samples[0].readings); }
+}
+
+async function loadSchema(){
+  const info = await jget("/api/feature-schema");
+  FIELDS = info.required_fields;
+}
+
+async function loadModelInfo(){
+  const meta = await jget("/api/model-info");
+  document.getElementById("model-badge").textContent = meta.best_model;
+
+  const table = document.getElementById("metrics-table");
+  const rows = Object.entries(meta.results).map(([name, r]) => {
+    const isBest = name === meta.best_model;
+    return `<tr class="${isBest ? 'best-row' : ''}"><td>${name}${isBest ? " ★" : ""}</td>
+      <td>${r.test.MAE}</td><td>${r.test.RMSE}</td><td>${r.test.R2}</td></tr>`;
+  }).join("");
+  table.innerHTML = `<tr><th>Model</th><th>MAE (cycles)</th><th>RMSE (cycles)</th><th>R²</th></tr>${rows}`;
+}
+
+async function runPrediction(){
+  const values = collectValues();
+  const resultArea = document.getElementById("result-area");
+  resultArea.innerHTML = `<div class="empty-state">Running model…</div>`;
+  try{
+    const [pred, shap] = await Promise.all([
+      jpost("/api/predict", values),
+      jpost("/api/explain", values),
+    ]);
+    const pct = Math.min(1, pred.predicted_rul_cycles / 125);
+    const color = statusColor(pred.status);
+    const maxAbs = Math.max(...shap.map(s => Math.abs(s.impact)), 0.001);
+    const shapRows = shap.map(s => {
+      const w = Math.round((Math.abs(s.impact) / maxAbs) * 100);
+      const barColor = s.impact >= 0 ? "#ef5b5b" : "#2dd4bf";
+      return `<div class="shap-row">
+        <div class="shap-name" title="${s.feature}">${s.feature}</div>
+        <div class="shap-bar-track"><div class="shap-bar-fill" style="width:${w}%; background:${barColor};"></div></div>
+        <div class="shap-val">${s.impact > 0 ? "+" : ""}${s.impact}</div>
+      </div>`;
+    }).join("");
+
+    resultArea.innerHTML = `
+      <div class="result-row">
+        <div class="gauge-wrap">
+          ${gaugeSVG(pct, color)}
+          <div class="gauge-num" style="color:${color}">${pred.predicted_rul_cycles}</div>
+          <div class="gauge-unit">CYCLES REMAINING</div>
+          <div class="status-pill ${statusClass(pred.status)}">${pred.status.toUpperCase()} &middot; ${pred.urgency} urgency</div>
+        </div>
+        <div>
+          <h2 style="margin-top:0;">What's driving this estimate</h2>
+          <p class="hint">SHAP impact on the predicted RUL (cycles). Red pushes RUL down (more wear), teal pushes it up.</p>
+          <div class="shap-list">${shapRows}</div>
+        </div>
+      </div>`;
+  }catch(e){
+    resultArea.innerHTML = `<div class="empty-state" style="color:#ef5b5b;">Prediction failed: ${e.message}</div>`;
+  }
+}
+
+document.getElementById("run-btn").addEventListener("click", runPrediction);
+document.getElementById("reset-btn").addEventListener("click", () => {
+  if(currentSample) renderFields(currentSample.readings);
+  document.getElementById("result-area").innerHTML = `<div class="empty-state">Load a sample or enter sensor values, then click <strong>Predict RUL</strong> to see the estimated remaining useful life and its explanation.</div>`;
+});
+
+(async function init(){
+  await loadSchema();
+  await loadSamples();
+  await loadModelInfo();
+})();
+</script>
+</body>
+</html>
