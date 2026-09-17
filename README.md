@@ -1,4 +1,4 @@
- Turbofan Engine RUL Predictor
+Turbofan Engine RUL Predictor
 Predicting how many flight cycles an aircraft engine has left, from live sensor telemetry — not a chatbot, an actual regression model in production.
 Overview
 This project estimates the Remaining Useful Life (RUL) of aircraft turbofan engines using multivariate sensor time-series data from NASA's C-MAPSS simulation. It covers the full pipeline: EDA → feature engineering → model comparison → explainability → a FastAPI backend → an interactive dashboard, all backed by real evaluation numbers from the included dataset.
