@@ -1,0 +1,34 @@
+# Environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets / config
+.env
+
+# Logs
+*.log
+train.log
+server.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+cache/
+temporary/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
